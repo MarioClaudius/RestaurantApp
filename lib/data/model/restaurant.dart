@@ -1,6 +1,6 @@
-import 'package:restaurant_app/model/category.dart';
-import 'package:restaurant_app/model/customer_review.dart';
-import 'package:restaurant_app/model/menu.dart';
+import 'package:restaurant_app/data/model/category.dart';
+import 'package:restaurant_app/data/model/customer_review.dart';
+import 'package:restaurant_app/data/model/menu.dart';
 
 class Restaurant {
   final String id;
