@@ -30,7 +30,7 @@ class ApiService {
   }
   
   Future<RestaurantSearchResponse> searchRestaurant(String query) async {
-    final response = await http.get((Uri.parse("$_baseUrl/search?q=$query"));
+    final response = await http.get((Uri.parse("$_baseUrl/search?q=$query")));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> body = jsonDecode(response.body);

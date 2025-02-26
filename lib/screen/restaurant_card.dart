@@ -40,6 +40,9 @@ class RestaurantCard extends StatelessWidget {
             const SizedBox.square(dimension: 8),
             Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     restaurant.name

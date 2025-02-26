@@ -7,10 +7,10 @@ class Restaurant {
   final String name;
   final String description;
   final String city;
-  final String address;
+  final String? address;
   final String pictureId;
   final List<Category> categories;
-  final Menu menus;
+  final Menu? menus;
   final double rating;
   final List<CustomerReview> customerReviews;
 
@@ -38,8 +38,10 @@ class Restaurant {
       categories: json["categories"] != null
         ? List<Category>.from(json["categories"]!.map((categoryJson) => Category.fromJson(categoryJson)))
         : <Category>[],
-      menus: Menu.fromJson(json["menus"]),
-      rating: json["rating"],
+      menus: json["menus"] != null
+        ? Menu.fromJson(json["menus"])
+        : null,
+      rating: double.parse(json["rating"].toString()),
       customerReviews: json["customerReviews"] != null
         ? List<CustomerReview>.from(json["customerReviews"]!.map((customerReviewJson) => CustomerReview.fromJson(customerReviewJson)))
         : <CustomerReview>[],
