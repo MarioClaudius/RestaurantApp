@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/provider/restaurant_list_provider.dart';
 import 'package:restaurant_app/screen/restaurant_card.dart';
+import 'package:restaurant_app/static/navigation_route.dart';
 import 'package:restaurant_app/static/restaurant_list_result_state.dart';
 
 class MainScreen extends StatefulWidget {
@@ -40,9 +41,11 @@ class _MainScreenState extends State<MainScreen> {
                 return RestaurantCard(
                   restaurant: restaurant,
                   onTap: () {
-                    // TODO: will change to move to detail page
-                    SnackBar snackBar = SnackBar(content: Text("Detail Restaurant id: ${restaurant.id}"));
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    Navigator.pushNamed(
+                      context,
+                      NavigationRoute.detailRoute.name,
+                      arguments: restaurant.id,
+                    );
                   }
                 );
               }
