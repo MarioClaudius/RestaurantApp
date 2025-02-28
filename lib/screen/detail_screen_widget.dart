@@ -49,6 +49,22 @@ class DetailScreenWidget extends StatelessWidget {
               ],
             ),
             const SizedBox.square(dimension: 16),
+            Center(
+              child: Column(
+                children: [
+                  Text("Food"),
+                  const SizedBox.square(dimension: 4),
+                  Column(
+                    children: restaurant.menus!.foods.map((food) => Text(food.name)).toList()
+                  ),
+                  const SizedBox.square(dimension: 8),
+                  Text("Drink"),
+                  Column(
+                    children: restaurant.menus!.drinks.map((drink) => Text(drink.name)).toList()
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
