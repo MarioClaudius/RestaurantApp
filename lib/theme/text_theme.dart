@@ -19,7 +19,7 @@ final textTheme = TextTheme(
     fontWeight: FontWeight.bold,
   ),
   headlineSmall: GoogleFonts.comfortaa(
-    fontSize: 24,
+    fontSize: 21,
   ),
   titleLarge: GoogleFonts.comfortaa(
     fontSize: 18,
