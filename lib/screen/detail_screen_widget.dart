@@ -29,8 +29,14 @@ class DetailScreenWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(restaurant.name),
-                      Text(restaurant.city),
+                      Text(
+                        restaurant.name,
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      Text(
+                        restaurant.city,
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
                     ],
                   ),
                 ),
@@ -42,7 +48,8 @@ class DetailScreenWidget extends StatelessWidget {
                     ),
                     const SizedBox.square(dimension: 4),
                     Text(
-                      restaurant.rating.toString()
+                      restaurant.rating.toString(),
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
                   ],
                 )
@@ -52,15 +59,28 @@ class DetailScreenWidget extends StatelessWidget {
             Center(
               child: Column(
                 children: [
-                  Text("Food"),
-                  const SizedBox.square(dimension: 4),
-                  Column(
-                    children: restaurant.menus!.foods.map((food) => Text(food.name)).toList()
+                  Text(
+                    "Food",
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
-                  const SizedBox.square(dimension: 8),
-                  Text("Drink"),
+                  const SizedBox.square(dimension: 10),
                   Column(
-                    children: restaurant.menus!.drinks.map((drink) => Text(drink.name)).toList()
+                    children: restaurant.menus!.foods.map((food) => Text(
+                      food.name,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    )).toList()
+                  ),
+                  const SizedBox.square(dimension: 16),
+                  Text(
+                    "Drink",
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  const SizedBox.square(dimension: 10),
+                  Column(
+                    children: restaurant.menus!.drinks.map((drink) => Text(
+                      drink.name,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    )).toList()
                   ),
                 ],
               ),

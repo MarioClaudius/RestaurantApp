@@ -42,7 +42,10 @@ class _DetailScreenState extends State<DetailScreen> {
               restaurant: restaurant
             ),
             RestaurantDetailErrorState(error: var message) => Center(
-              child: Text(message),
+              child: Text(
+                message,
+                style: Theme.of(context).textTheme.displayLarge,
+              ),
             ),
             _ => const SizedBox()
           };

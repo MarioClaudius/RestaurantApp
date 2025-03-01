@@ -45,7 +45,8 @@ class RestaurantCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    restaurant.name
+                    restaurant.name,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox.square(dimension: 4),
                   Row(
@@ -54,7 +55,10 @@ class RestaurantCard extends StatelessWidget {
                         Icons.place_rounded
                       ),
                       const SizedBox.square(dimension: 4),
-                      Text(restaurant.city),
+                      Text(
+                        restaurant.city,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
                     ],
                   ),
                   const SizedBox.square(dimension: 4),
@@ -65,7 +69,10 @@ class RestaurantCard extends StatelessWidget {
                         color: Colors.amberAccent,
                       ),
                       const SizedBox.square(dimension: 4),
-                      Text(restaurant.rating.toString())
+                      Text(
+                        restaurant.rating.toString(),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
                     ],
                   )
                 ],

@@ -51,7 +51,10 @@ class _MainScreenState extends State<MainScreen> {
               }
             ),
             RestaurantListErrorState(error: var message) => Center(
-              child: Text(message),
+              child: Text(
+                message,
+                style: Theme.of(context).textTheme.displayLarge,
+              ),
             ),
             _ => const SizedBox(),
           };
