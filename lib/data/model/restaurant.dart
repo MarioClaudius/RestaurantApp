@@ -1,6 +1,7 @@
 import 'package:restaurant_app/data/model/category.dart';
 import 'package:restaurant_app/data/model/customer_review.dart';
 import 'package:restaurant_app/data/model/menu.dart';
+import 'dart:convert';
 
 class Restaurant {
   final String id;
@@ -46,5 +47,17 @@ class Restaurant {
         ? List<CustomerReview>.from(json["customerReviews"]!.map((customerReviewJson) => CustomerReview.fromJson(customerReviewJson)))
         : <CustomerReview>[],
     );
+  }
+
+  factory Restaurant.fromRecordJson(Map<String, dynamic> recordJson) {
+    Map<String, dynamic> decodedFavoriteRestaurant = jsonDecode(recordJson['favorite_restaurant_json_data']);
+    return Restaurant.fromJson(decodedFavoriteRestaurant);
+  }
+
+  Map<String, dynamic> toRecordJson() {
+    return <String, dynamic>{
+      'id': id,
+      'favorite_restaurant_json_data': jsonEncode(this),
+    };
   }
 }
