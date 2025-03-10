@@ -49,7 +49,7 @@ class SqliteService {
     return results.map((result) => Restaurant.fromRecordJson(result)).first;
   }
 
-  Future<int> removeFavoriteRestaurant(int id) async {
+  Future<int> removeFavoriteRestaurant(String id) async {
     final db = await _initializeDb();
     final result = await db.delete(_tableName, where: "id = ?", whereArgs: [id]);
     return result;
