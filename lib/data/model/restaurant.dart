@@ -57,7 +57,22 @@ class Restaurant {
   Map<String, dynamic> toRecordJson() {
     return <String, dynamic>{
       'id': id,
-      'favorite_restaurant_json_data': jsonEncode(this),
+      'favorite_restaurant_json_data': jsonEncode(toJson()),
+    };
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'city': city,
+      'address': address,
+      'pictureId': pictureId,
+      'categories': categories.map((category) => category.toJson()).toList(),
+      'menus': menus?.toJson(),
+      'rating': rating,
+      'customerReviews': customerReviews.map((customerReview) => customerReview.toJson()).toList(),
     };
   }
 }

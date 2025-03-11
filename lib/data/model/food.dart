@@ -10,4 +10,10 @@ class Food {
       name: json["name"],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+    };
+  }
 }

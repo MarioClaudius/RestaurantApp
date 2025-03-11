@@ -16,6 +16,9 @@ class LocalDatabaseProvider extends ChangeNotifier {
   Restaurant? _favoriteRestaurant;
   Restaurant? get favoriteRestaurant => _favoriteRestaurant;
 
+  bool? _isFavoriteRestaurant;
+  bool? get isFavoriteRestaurant => _isFavoriteRestaurant;
+
   Future<void> saveFavoriteRestaurant(Restaurant value) async {
     try {
       final result = await _service.insertFavoriteRestaurant(value);
@@ -61,6 +64,16 @@ class LocalDatabaseProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _message = "Failed to remove favorite restaurant";
+      notifyListeners();
+    }
+  }
+
+  Future<void> checkRestaurantIsFavorite(String id) async {
+    try {
+      _isFavoriteRestaurant = await _service.checkRestaurantIsFavorite(id);
+      notifyListeners();
+    } catch (e) {
+      _message = "Failed to check favorite restaurant";
       notifyListeners();
     }
   }

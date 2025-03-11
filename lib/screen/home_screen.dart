@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/provider/local_database_provider.dart';
+import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_list_provider.dart';
 import 'package:restaurant_app/screen/restaurant_card.dart';
 import 'package:restaurant_app/static/navigation_route.dart';
 import 'package:restaurant_app/static/restaurant_list_result_state.dart';
+import 'package:restaurant_app/static/restaurant_detail_result_state.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -38,13 +41,34 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCount: restaurantList.length,
               itemBuilder: (context, index) {
                 final restaurant = restaurantList[index];
-                return RestaurantCard(
-                  restaurant: restaurant,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      NavigationRoute.detailRoute.name,
-                      arguments: restaurant.id,
+                return Consumer<LocalDatabaseProvider>(
+                  builder: (context, dbProvider, child) {
+                    return RestaurantCard(
+                      restaurant: restaurant,
+                      isFavoriteCard: false,
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          NavigationRoute.detailRoute.name,
+                          arguments: restaurant.id,
+                        );
+                      },
+                      onTapIcon: () async {
+                        final localDatabaseProvider = context.read<LocalDatabaseProvider>();
+                        await localDatabaseProvider.checkRestaurantIsFavorite(restaurant.id);
+                        if (localDatabaseProvider.isFavoriteRestaurant != null && localDatabaseProvider.isFavoriteRestaurant!) {
+                          await localDatabaseProvider.removeFavoriteRestaurant(restaurant.id);
+                        } else {
+                          final restaurantDetailProvider = context.read<RestaurantDetailProvider>();
+                          await restaurantDetailProvider.fetchRestaurantDetail(restaurant.id);
+                          switch(restaurantDetailProvider.resultState) {
+                            case RestaurantDetailLoadedState(data: var restaurantData):
+                              await localDatabaseProvider.saveFavoriteRestaurant(restaurantData);
+                            case _ :
+                              // do nothing
+                          }
+                        }
+                      },
                     );
                   }
                 );

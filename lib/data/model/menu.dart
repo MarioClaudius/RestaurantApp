@@ -20,4 +20,11 @@ class Menu {
         : <Drink>[],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'foods': foods.map((food) => food.toJson()).toList(),
+      'drinks': drinks.map((drink) => drink.toJson()).toList(),
+    };
+  }
 }

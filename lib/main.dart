@@ -17,7 +17,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        Provider(
+        ChangeNotifierProvider(
           create: (context) => IndexNavProvider(),
         ),
         Provider(

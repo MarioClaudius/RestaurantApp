@@ -4,11 +4,17 @@ import 'package:restaurant_app/data/model/restaurant.dart';
 class RestaurantCard extends StatelessWidget {
   final Restaurant restaurant;
   final Function() onTap;
+  final bool isFavoriteCard;
+  final Function()? onTapIcon;
+  final bool? isFavoriteRestaurant;
 
   RestaurantCard({
     super.key,
     required this.restaurant,
-    required this.onTap
+    required this.onTap,
+    required this.isFavoriteCard,
+    this.onTapIcon,
+    this.isFavoriteRestaurant,
   });
 
   @override
@@ -78,6 +84,18 @@ class RestaurantCard extends StatelessWidget {
                 ],
               )
             ),
+            GestureDetector(
+              onTap: onTapIcon,
+              child: Center(
+                child: Icon(
+                  isFavoriteCard
+                    ? Icons.delete
+                    : isFavoriteRestaurant != null && isFavoriteRestaurant!
+                      ? Icons.favorite_rounded
+                      : Icons.favorite_border_rounded
+                ),
+              ),
+            )
           ],
         ),
       ),

@@ -54,4 +54,10 @@ class SqliteService {
     final result = await db.delete(_tableName, where: "id = ?", whereArgs: [id]);
     return result;
   }
+
+  Future<bool> checkRestaurantIsFavorite(String id) async {
+    final db = await _initializeDb();
+    final results = await db.query(_tableName, where: "id = ?", whereArgs: [id], limit: 1);
+    return results.isNotEmpty;
+  }
 }

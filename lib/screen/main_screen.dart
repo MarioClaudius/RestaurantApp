@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/provider/index_nav_provider.dart';
+import 'package:restaurant_app/screen/favorite_screen.dart';
 import 'package:restaurant_app/screen/home_screen.dart';
 
 class MainScreen extends StatelessWidget {
@@ -12,7 +13,7 @@ class MainScreen extends StatelessWidget {
       body: Consumer<IndexNavProvider>(
         builder: (context, value, child) {
           return switch(value.indexBottomNavBar) {
-            1 => const Text("TESTEST"),
+            1 => const FavoriteScreen(),
             _ => const HomeScreen(),
           };
         }
