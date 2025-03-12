@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/provider/local_database_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/screen/detail_screen_widget.dart';
 import 'package:restaurant_app/static/restaurant_detail_result_state.dart';
@@ -51,6 +52,30 @@ class _DetailScreenState extends State<DetailScreen> {
           };
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final localDatabaseProvider = context.read<LocalDatabaseProvider>();
+          await localDatabaseProvider.checkRestaurantIsFavorite(widget.restaurantId);
+          if (localDatabaseProvider.isFavoriteRestaurant != null && localDatabaseProvider.isFavoriteRestaurant!) {
+            await localDatabaseProvider.removeFavoriteRestaurant(widget.restaurantId);
+          } else {
+            final restaurantDetailProvider = context.read<
+                RestaurantDetailProvider>();
+            await restaurantDetailProvider.fetchRestaurantDetail(
+                widget.restaurantId);
+            switch (restaurantDetailProvider.resultState) {
+              case RestaurantDetailLoadedState(data: var restaurantData):
+                await localDatabaseProvider.saveFavoriteRestaurant(
+                    restaurantData);
+              case _ :
+              // do nothing
+            }
+          }
+        },
+        shape: const CircleBorder(),
+        child: const Icon(Icons.favorite),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
