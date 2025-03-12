@@ -24,6 +24,14 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Future.microtask(() {
+      context.read<LocalDatabaseProvider>().loadAllFavoriteRestaurants();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
