@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/main.dart';
 import 'package:restaurant_app/provider/local_database_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
+import 'package:restaurant_app/provider/shared_preferences_provider.dart';
 import 'package:restaurant_app/screen/detail_screen_widget.dart';
 import 'package:restaurant_app/static/navigation_route.dart';
 import 'package:restaurant_app/static/restaurant_detail_result_state.dart';
@@ -50,6 +52,37 @@ class _DetailScreenState extends State<DetailScreen> {
             },
             icon: Icon(Icons.arrow_back)
           ),
+          actions: [
+            PopupMenuButton(
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: Consumer<SharedPreferencesProvider>(
+                        builder: (context, sharedPreferencesProvider, child) {
+                          final bool isDarkMode = sharedPreferencesProvider.isDarkMode!;
+                          return ListTile(
+                            leading: Icon(
+                                isDarkMode
+                                    ? Icons.dark_mode
+                                    : Icons.light_mode
+                            ),
+                            title: Text(
+                                isDarkMode
+                                    ? "Dark Mode"
+                                    : "Light Mode"
+                            ),
+                            onTap: () async {
+                              await sharedPreferencesProvider.changeThemeMode();
+                              sharedPreferencesProvider.getIsDarkModeValue();
+                              MainApp.of(context).changeTheme(!sharedPreferencesProvider.isDarkMode!);
+                              Navigator.pop(context);
+                            },
+                          );
+                        }
+                    ),
+                  ),
+                ]
+            ),
+          ],
         ),
         body: Consumer<RestaurantDetailProvider>(
           builder: (context, value, child) {

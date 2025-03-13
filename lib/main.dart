@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
+import 'package:restaurant_app/data/services/shared_preferences_service.dart';
 import 'package:restaurant_app/data/services/sqlite_service.dart';
 import 'package:restaurant_app/provider/index_nav_provider.dart';
 import 'package:restaurant_app/provider/local_database_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_list_provider.dart';
+import 'package:restaurant_app/provider/shared_preferences_provider.dart';
 import 'package:restaurant_app/screen/detail_screen.dart';
 import 'package:restaurant_app/screen/home_screen.dart';
 import 'package:restaurant_app/screen/main_screen.dart';
@@ -12,8 +14,11 @@ import 'package:restaurant_app/static/navigation_route.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/theme/text_theme.dart';
 import 'package:restaurant_app/theme/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
   runApp(
     MultiProvider(
       providers: [
@@ -25,6 +30,9 @@ void main() {
         ),
         Provider(
           create: (context) => SqliteService(),
+        ),
+        Provider(
+          create: (context) => SharedPreferencesService(prefs),
         ),
         ChangeNotifierProvider(
           create: (context) => LocalDatabaseProvider(
@@ -41,38 +49,93 @@ void main() {
             context.read<ApiService>()
           )
         ),
+        ChangeNotifierProvider(
+          create: (context) => SharedPreferencesProvider(
+            context.read<SharedPreferencesService>(),
+          )
+        ),
       ],
       child: const MainApp(),
     )
   );
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
   @override
+  State<MainApp> createState() => _MainAppState();
+
+  static _MainAppState of(BuildContext context) =>
+      context.findAncestorStateOfType<_MainAppState>()!;
+}
+
+class _MainAppState extends State<MainApp> {
+  bool _isDarkModeApp = false;
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      final sharedPreferencesProvider = context.read<SharedPreferencesProvider>();
+      sharedPreferencesProvider.getIsDarkModeValue();
+      changeTheme(sharedPreferencesProvider.isDarkMode!);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Restaurant App",
-      theme: ThemeData(
-        colorScheme: MaterialTheme.lightScheme(),
-        textTheme: textTheme,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: MaterialTheme.darkScheme(),
-        textTheme: textTheme,
-      ),
-      themeMode: ThemeMode.system,
-      initialRoute: NavigationRoute.mainRoute.name,
-      routes: {
-        NavigationRoute.mainRoute.name: (context) => const MainScreen(),
-        NavigationRoute.detailRoute.name: (context) => DetailScreen(
-          restaurantId: ModalRoute.of(context)?.settings.arguments as String
-        ),
-      },
+    return Consumer<SharedPreferencesProvider>(
+      builder: (context, sharedPreferencesProvider, child) {
+        return MaterialApp(
+          title: "Restaurant App",
+          theme: ThemeData(
+            colorScheme: MaterialTheme.lightScheme(),
+            textTheme: textTheme,
+          ),
+          darkTheme: ThemeData(
+            colorScheme: MaterialTheme.darkScheme(),
+            textTheme: textTheme,
+          ),
+          themeMode: _isDarkModeApp ? ThemeMode.dark : ThemeMode.light,
+          initialRoute: NavigationRoute.mainRoute.name,
+          routes: {
+            NavigationRoute.mainRoute.name: (context) => const MainScreen(),
+            NavigationRoute.detailRoute.name: (context) => DetailScreen(
+                restaurantId: ModalRoute.of(context)?.settings.arguments as String
+            ),
+          },
+        );
+      }
     );
+    // return MaterialApp(
+    //   title: "Restaurant App",
+    //   theme: ThemeData(
+    //     colorScheme: MaterialTheme.lightScheme(),
+    //     textTheme: textTheme,
+    //   ),
+    //   darkTheme: ThemeData(
+    //     colorScheme: MaterialTheme.darkScheme(),
+    //     textTheme: textTheme,
+    //   ),
+    //   themeMode: ThemeMode.system,
+    //   initialRoute: NavigationRoute.mainRoute.name,
+    //   routes: {
+    //     NavigationRoute.mainRoute.name: (context) => const MainScreen(),
+    //     NavigationRoute.detailRoute.name: (context) => DetailScreen(
+    //       restaurantId: ModalRoute.of(context)?.settings.arguments as String
+    //     ),
+    //   },
+    // );
+  }
+
+  void changeTheme(bool isDarkMode) {
+    setState(() {
+      _isDarkModeApp = isDarkMode;
+    });
   }
 }
+
 
 const lightColorScheme = ColorScheme(
   brightness: Brightness.light,
