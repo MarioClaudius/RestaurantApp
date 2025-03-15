@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () async {
                         await sharedPreferencesProvider.changeThemeMode();
                         sharedPreferencesProvider.getIsDarkModeValue();
-                        MainApp.of(context).changeTheme(!sharedPreferencesProvider.isDarkMode!);
+                        MainApp.of(context).changeTheme(sharedPreferencesProvider.isDarkMode!);
                         Navigator.pop(context);
                       },
                     );
