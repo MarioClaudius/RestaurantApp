@@ -6,6 +6,7 @@ class SharedPreferencesService {
   SharedPreferencesService(this._preferences);
 
   static const String keyDarkMode = "DARKMODE";
+  static const String keyScheduleIsActive = "SCHEDULEACTIVE";
 
   Future<void> changeThemeMode() async {
     final bool? isDarkMode = _preferences.getBool(keyDarkMode);
@@ -23,5 +24,23 @@ class SharedPreferencesService {
   bool isDarkMode() {
     final bool? isDarkMode = _preferences.getBool(keyDarkMode);
     return isDarkMode ?? false;
+  }
+
+  Future<void> toggleSchedule() async {
+    final bool? scheduleIsActive = _preferences.getBool(keyScheduleIsActive);
+    try {
+      if (scheduleIsActive == null) {
+        await _preferences.setBool(keyScheduleIsActive, true);
+      } else {
+        await _preferences.setBool(keyScheduleIsActive, !scheduleIsActive);
+      }
+    } catch (e) {
+      throw Exception("Shared preferences cannot toggle schedule");
+    }
+  }
+
+  bool isScheduleActive() {
+    final bool? scheduleIsActive = _preferences.getBool(keyScheduleIsActive);
+    return scheduleIsActive ?? false;
   }
 }

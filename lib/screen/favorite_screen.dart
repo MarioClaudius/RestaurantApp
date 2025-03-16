@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/main.dart';
 import 'package:restaurant_app/provider/local_database_provider.dart';
+import 'package:restaurant_app/provider/local_notification_provider.dart';
 import 'package:restaurant_app/provider/shared_preferences_provider.dart';
 import 'package:restaurant_app/screen/restaurant_card.dart';
 import 'package:restaurant_app/static/navigation_route.dart';
@@ -60,6 +61,42 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                             await sharedPreferencesProvider.changeThemeMode();
                             sharedPreferencesProvider.getIsDarkModeValue();
                             MainApp.of(context).changeTheme(!sharedPreferencesProvider.isDarkMode!);
+                            Navigator.pop(context);
+                          },
+                        );
+                      }
+                  ),
+                ),
+                PopupMenuItem(
+                  child: Consumer<SharedPreferencesProvider>(
+                      builder: (context, sharedPreferencesProvider, child) {
+                        final bool isScheduleActive = sharedPreferencesProvider.isScheduleActive!;
+                        return ListTile(
+                          leading: Icon(
+                              isScheduleActive
+                                  ? Icons.cancel
+                                  : Icons.schedule
+                          ),
+                          title: Text(
+                              isScheduleActive
+                                  ? "Cancel Daily Lunch Reminder"
+                                  : "Set Daily Lunch Reminder"
+                          ),
+                          onTap: () async {
+                            LocalNotificationProvider localNotificationProvider = context.read<LocalNotificationProvider>();
+                            await sharedPreferencesProvider.toggleSchedule();
+                            sharedPreferencesProvider.getIsScheduleActive();
+                            if (sharedPreferencesProvider.isScheduleActive!) {
+                              await localNotificationProvider.scheduleDailyLunchNotification();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("Notification Scheduled!")),
+                              );
+                            } else {
+                              await localNotificationProvider.cancelNotification();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("Notification Canceled!")),
+                              );
+                            }
                             Navigator.pop(context);
                           },
                         );
