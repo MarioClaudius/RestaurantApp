@@ -37,67 +37,23 @@ class _HomeScreenState extends State<HomeScreen> {
           PopupMenuButton(
             itemBuilder: (context) => [
               PopupMenuItem(
-                child: Consumer<SharedPreferencesProvider>(
-                  builder: (context, sharedPreferencesProvider, child) {
-                    final bool isDarkMode = sharedPreferencesProvider.isDarkMode!;
-                    return ListTile(
-                      leading: Icon(
-                        isDarkMode
-                            ? Icons.dark_mode
-                            : Icons.light_mode
-                      ),
-                      title: Text(
-                          isDarkMode
-                              ? "Dark Mode"
-                              : "Light Mode"
-                      ),
-                      onTap: () async {
-                        await sharedPreferencesProvider.changeThemeMode();
-                        sharedPreferencesProvider.getIsDarkModeValue();
-                        MainApp.of(context).changeTheme(sharedPreferencesProvider.isDarkMode!);
-                        Navigator.pop(context);
-                      },
+                child: ListTile(
+                  leading: Icon(
+                    Icons.settings
+                  ),
+                  title: const Text(
+                    "Settings"
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(
+                      context,
+                      NavigationRoute.settingRoute.name,
                     );
-                  }
+                  },
                 ),
               ),
-              PopupMenuItem(
-                child: Consumer<SharedPreferencesProvider>(
-                    builder: (context, sharedPreferencesProvider, child) {
-                      final bool isScheduleActive = sharedPreferencesProvider.isScheduleActive!;
-                      return ListTile(
-                        leading: Icon(
-                            isScheduleActive
-                                ? Icons.cancel
-                                : Icons.schedule
-                        ),
-                        title: Text(
-                            isScheduleActive
-                                ? "Cancel Daily Lunch Reminder"
-                                : "Set Daily Lunch Reminder"
-                        ),
-                        onTap: () async {
-                          LocalNotificationProvider localNotificationProvider = context.read<LocalNotificationProvider>();
-                          await sharedPreferencesProvider.toggleSchedule();
-                          sharedPreferencesProvider.getIsScheduleActive();
-                          if (sharedPreferencesProvider.isScheduleActive!) {
-                            await localNotificationProvider.scheduleDailyLunchNotification();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Notification Scheduled!")),
-                            );
-                          } else {
-                            await localNotificationProvider.cancelNotification();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Notification Canceled!")),
-                            );
-                          }
-                          Navigator.pop(context);
-                        },
-                      );
-                    }
-                ),
-              ),
-            ]
+            ],
           ),
         ],
       ),
@@ -138,6 +94,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               // do nothing
                           }
                         }
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(context.read<LocalDatabaseProvider>().message)),
+                        );
                       },
                     );
                   }
@@ -155,9 +114,5 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       ),
     );
-  }
-
-  Future<void> _scheduleDailyLunchNotification() async {
-
   }
 }

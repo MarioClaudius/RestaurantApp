@@ -15,9 +15,9 @@ class SharedPreferencesProvider extends ChangeNotifier {
   bool? _isScheduleActive;
   bool? get isScheduleActive => _isScheduleActive;
 
-  Future<void> changeThemeMode() async {
+  Future<void> changeThemeMode(bool value) async {
     try {
-      await _service.changeThemeMode();
+      await _service.changeThemeMode(value);
       _message = "Theme mode changed successfully";
     } catch (e) {
       _message = "Change theme mode failed";
@@ -35,12 +35,16 @@ class SharedPreferencesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleSchedule() async {
+  Future<void> setDailyLunchNotificationSchedule(bool value) async {
     try {
-      await _service.toggleSchedule();
-      _message = "Schedule toggled successfully";
+      await _service.setDailyLunchNotificationSchedule(value);
+      if(value) {
+        _message = "Daily lunch notification schedule turned on successfully";
+      } else {
+        _message = "Daily lunch notification schedule turned off successfully";
+      }
     } catch (e) {
-      _message = "Toggle schedule failed";
+      _message = "Set daily lunch notification schedule failed";
     }
     notifyListeners();
   }

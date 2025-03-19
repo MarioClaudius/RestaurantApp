@@ -41,80 +41,42 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         title: const Text("Favorite Restaurant List"),
         actions: [
           PopupMenuButton(
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  child: Consumer<SharedPreferencesProvider>(
-                      builder: (context, sharedPreferencesProvider, child) {
-                        final bool isDarkMode = sharedPreferencesProvider.isDarkMode!;
-                        return ListTile(
-                          leading: Icon(
-                              isDarkMode
-                                  ? Icons.dark_mode
-                                  : Icons.light_mode
-                          ),
-                          title: Text(
-                              isDarkMode
-                                  ? "Dark Mode"
-                                  : "Light Mode"
-                          ),
-                          onTap: () async {
-                            await sharedPreferencesProvider.changeThemeMode();
-                            sharedPreferencesProvider.getIsDarkModeValue();
-                            MainApp.of(context).changeTheme(!sharedPreferencesProvider.isDarkMode!);
-                            Navigator.pop(context);
-                          },
-                        );
-                      }
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: ListTile(
+                  leading: Icon(
+                    Icons.settings
                   ),
-                ),
-                PopupMenuItem(
-                  child: Consumer<SharedPreferencesProvider>(
-                      builder: (context, sharedPreferencesProvider, child) {
-                        final bool isScheduleActive = sharedPreferencesProvider.isScheduleActive!;
-                        return ListTile(
-                          leading: Icon(
-                              isScheduleActive
-                                  ? Icons.cancel
-                                  : Icons.schedule
-                          ),
-                          title: Text(
-                              isScheduleActive
-                                  ? "Cancel Daily Lunch Reminder"
-                                  : "Set Daily Lunch Reminder"
-                          ),
-                          onTap: () async {
-                            LocalNotificationProvider localNotificationProvider = context.read<LocalNotificationProvider>();
-                            await sharedPreferencesProvider.toggleSchedule();
-                            sharedPreferencesProvider.getIsScheduleActive();
-                            if (sharedPreferencesProvider.isScheduleActive!) {
-                              await localNotificationProvider.scheduleDailyLunchNotification();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Notification Scheduled!")),
-                              );
-                            } else {
-                              await localNotificationProvider.cancelNotification();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Notification Canceled!")),
-                              );
-                            }
-                            Navigator.pop(context);
-                          },
-                        );
-                      }
+                  title: const Text(
+                    "Settings"
                   ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(
+                      context,
+                      NavigationRoute.settingRoute.name,
+                    );
+                  },
                 ),
-              ]
+              ),
+            ]
           ),
         ],
       ),
       body: Consumer<LocalDatabaseProvider>(
         builder: (context, value, child) {
-          if (value.favoriteRestaurantList == null) {
-            return const SizedBox();
-          }
           final favoriteRestaurantList = value.favoriteRestaurantList;
+          if (favoriteRestaurantList == null || favoriteRestaurantList.isEmpty) {
+            return Center(
+              child: Text(
+                'No Favorite Restaurant Added',
+                style: Theme.of(context).textTheme.headlineMedium,
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
           return ListView.builder(
-            itemCount: favoriteRestaurantList!.length,
+            itemCount: favoriteRestaurantList.length,
             itemBuilder: (context, index) {
               final favoriteRestaurant = favoriteRestaurantList[index];
               return RestaurantCard(
@@ -130,6 +92,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 onTapIcon: () async {
                   final localDatabaseProvider = context.read<LocalDatabaseProvider>();
                   await localDatabaseProvider.removeFavoriteRestaurant(favoriteRestaurant.id);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(context.read<LocalDatabaseProvider>().message)),
+                  );
                   await localDatabaseProvider.loadAllFavoriteRestaurants();
                 },
               );

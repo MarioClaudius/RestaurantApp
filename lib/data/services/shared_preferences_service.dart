@@ -8,14 +8,9 @@ class SharedPreferencesService {
   static const String keyDarkMode = "DARKMODE";
   static const String keyScheduleIsActive = "SCHEDULEACTIVE";
 
-  Future<void> changeThemeMode() async {
-    final bool? isDarkMode = _preferences.getBool(keyDarkMode);
+  Future<void> changeThemeMode(bool value) async {
     try {
-      if (isDarkMode == null) {
-        await _preferences.setBool(keyDarkMode, true);
-      } else {
-        await _preferences.setBool(keyDarkMode, !isDarkMode);
-      }
+      await _preferences.setBool(keyDarkMode, value);
     } catch (e) {
       throw Exception("Shared preferences cannot change mode.");
     }
@@ -26,16 +21,11 @@ class SharedPreferencesService {
     return isDarkMode ?? false;
   }
 
-  Future<void> toggleSchedule() async {
-    final bool? scheduleIsActive = _preferences.getBool(keyScheduleIsActive);
+  Future<void> setDailyLunchNotificationSchedule(bool value) async {
     try {
-      if (scheduleIsActive == null) {
-        await _preferences.setBool(keyScheduleIsActive, true);
-      } else {
-        await _preferences.setBool(keyScheduleIsActive, !scheduleIsActive);
-      }
+      await _preferences.setBool(keyScheduleIsActive, value);
     } catch (e) {
-      throw Exception("Shared preferences cannot toggle schedule");
+      throw Exception("Shared preferences cannot set daily lunch notification schedule");
     }
   }
 
