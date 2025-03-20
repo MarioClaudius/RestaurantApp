@@ -113,7 +113,9 @@ class _MainAppState extends State<MainApp> {
             colorScheme: MaterialTheme.darkScheme(),
             textTheme: textTheme,
           ),
-          themeMode: sharedPreferencesProvider.isDarkMode! ? ThemeMode.dark : ThemeMode.light,
+          themeMode: sharedPreferencesProvider.isDarkMode == null || !sharedPreferencesProvider.isDarkMode!
+              ? ThemeMode.light
+              : ThemeMode.dark,
           initialRoute: NavigationRoute.mainRoute.name,
           routes: {
             NavigationRoute.mainRoute.name: (context) => const MainScreen(),

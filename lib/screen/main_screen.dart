@@ -16,7 +16,9 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
 
-    context.read<IndexNavProvider>().setIndextBottomNavBar = 0;
+    Future.microtask(() {
+      context.read<IndexNavProvider>().setIndextBottomNavBar = 0;
+    });
   }
 
   @override
